@@ -154,41 +154,43 @@ class GlobalImgui:
         
         # print('self.draw_handlers.items()',self.draw_handlers.items())
         for SpaceType, draw_handler in self.draw_handlers.items():
-            SpaceType.draw_handler_remove(draw_handler, 'WINDOW')
+            SpaceType[0].draw_handler_remove(draw_handler, 'WINDOW')
         self.draw_handlers.clear()
         print('IMGUI DEBUG','shutdown_imgui')
         # imgui.destroy_context(self.imgui_context)
         
 
 
-    def handler_add(self, callback, SpaceType,ops):
-        """
-        @param callback The draw function to add
-        @param SpaceType Can be any class deriving from bpy.types.Space
-        @return An identifing handle that must be provided to handler_remove in
-                order to remove this callback.
-        """
-        a = time.time()
+    def handler_add(self, callback, space_type_and_region, ops):
+        # space_type_and_region: 形如 (SpaceType, region.id)
         if self.imgui_context is None:
             self.init_imgui()
-        # print(self.draw_handlers)
-        if SpaceType not in self.draw_handlers:
-            self.draw_handlers[SpaceType] = SpaceType.draw_handler_add(self.draw,
-                                                                       (SpaceType,  ops),
-                                                                       'WINDOW', 'POST_PIXEL')
+        
+        key = space_type_and_region
+        if key[1] not in self.draw_handlers:
+            self.draw_handlers[key] = key[0].draw_handler_add(
+                self.draw,
+                (key[0], ops),
+                'WINDOW', 'POST_PIXEL'
+            )
 
         handle = self.next_callback_id
         self.next_callback_id += 1
-        self.callbacks[handle] = (callback, SpaceType)
+        self.callbacks[handle] = (callback, key[1])
         return handle
 
     def handler_remove(self, handle):
-        print('移除imgui句柄handler_remove')
+        print('关闭窗口或者新建另一个窗口',self.callbacks[handle])
         # clear all
         if handle not in self.callbacks:
             return
+        #移除上一个窗口绘制
+        for SpaceType, draw_handler in self.draw_handlers.items():
+            if SpaceType[1]==self.callbacks[handle][1]:
+                SpaceType[0].draw_handler_remove(draw_handler, 'WINDOW')
         del self.callbacks[handle]
-        if not self.callbacks:
+        
+        if not len(self.callbacks):
             self.shutdown_imgui()
         print('Imgui Debug:',self.draw_handlers)
     def apply_ui_settings(self):
@@ -231,9 +233,14 @@ class GlobalImgui:
         imgui.push_style_var(20, 1)
         invalid_callback = []  # 创建一个列表来存储无效的回调函数
 
-        for cb, SpaceType in self.callbacks.values():
+        # for cb, SpaceType in self.callbacks.values():
+        #     # print('draw1',SpaceType,area)
+        #     if SpaceType == area:
+        #         # print('draw2',SpaceType,area)
+        #         cb(bpy.context)
+        for cb, region_id in self.callbacks.values():
             # print('draw1',SpaceType,area)
-            if SpaceType == area:
+            if region_id == ops.region.as_pointer():
                 # print('draw2',SpaceType,area)
                 cb(bpy.context)
         # 从 ImGui 样式堆栈中弹出自定义颜色

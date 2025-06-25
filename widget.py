@@ -11,7 +11,21 @@ from imgui_bundle import imgui
 from .utils.utils import set_brush_color_based_on_mode,brush_value_based_on_mode,get_prefs,im_pow
 color_edit_active_component = None
 slider_width=256
+color_hsv = [0, 0, 0]
+color_rgb = [0, 0, 0]
+colors = []
+color_palette_size = 40
+color_palette_dict = {}
+# colorbar 颜色拾取处理,拖动bar的最后一个色彩存入colors[0]
+color_tmp = []
 
+values = [0.0, 0.60, 0.35, 0.9, 0.70, 0.20, 0.0]
+Color_Picker_Imgui_color = (114, 144, 154, 200)
+Color_Picker_Imgui_alpha_preview = True
+Color_Picker_Imgui_alpha_half_preview = False
+Color_Picker_Imgui_drag_and_drop = True
+Color_Picker_Imgui_options_menu = True
+Color_Picker_Imgui_hdr = False
 def im_clamp(v, mn, mx):
     return max(mn, min(mx, v))
 
