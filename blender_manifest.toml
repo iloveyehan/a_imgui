@@ -1,0 +1,47 @@
+schema_version = "1.0.2"
+
+# Example of manifest file for a Blender extension
+# Change the values according to your extension
+id = "a_imgui"
+version = "1.0.2"
+name = "a_imgui"
+tagline = "a_imgui"
+maintainer = "Cupcko <649730016@qq.com>"
+# Supported types: "add-on", "theme"
+type = "add-on"
+
+# Optional: add-ons can list which resources they will require:
+# * "files" (for access of any filesystem operations)
+# * "network" (for internet access)
+# * "camera" (to capture photos and videos)
+# * "microphone" (to capture audio)
+permissions = ["files"]
+
+# Optional link to documentation, support, source files, etc
+ website = "https://github.com/iloveyehan/Kourin_tool"
+
+# Optional list defined by Blender and server, see:
+# https://docs.blender.org/manual/en/dev/extensions/tags.html
+tags = ["3D View","Render", "Material", "Paint"]
+
+blender_version_min = "4.0.0"
+# Optional: maximum supported Blender version
+# blender_version_max = "5.1.0"
+
+# License conforming to https://spdx.org/licenses/ (use "SPDX: prefix)
+# https://docs.blender.org/manual/en/dev/extensions/licenses.html
+license = [
+  "SPDX:GPL-2.0-or-later",
+]
+# Optional: required by some licenses.
+copyright = [
+  "2002-2025 Cupcko",
+]
+wheels = [
+    "./wheels/imgui_bundle-1.6.3-cp311-cp311-win_amd64.whl",
+    "./wheels/typing_extensions-4.13.2-py3-none-any.whl",
+    "./wheels/pydantic_core-2.33.2-cp311-cp311-win_amd64.whl",
+    "./wheels/pydantic-2.11.4-py3-none-any.whl",
+    "./wheels/munch-4.0.0-py2.py3-none-any.whl",
+    "./wheels/typing_inspection-0.4.1-py3-none-any.whl",
+]
